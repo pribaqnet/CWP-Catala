@@ -1,0 +1,113 @@
+<div class="row  border-bottom white-bg dashboard-header">
+    {% if mod.fsl == 1 %}
+    {% set stflalert ='block' %}
+    {% else %}
+    {% set stflalert ='none' %}
+    {% endif %}
+    <div class="row  alert alert-warning col-lg-12" style="margin-left: 5px; padding-right: 5px;display:{{stflalert}}" id="alertfl">
+        <strong>{{langene.GALARTFILEBLOCK}}</strong>
+    </div>
+    <div class="col-lg-10">
+        <h2>{{langmod.PGTITLE}} ({{users}})</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="?">Home</a></li>
+            <li class="breadcrumb-item active"><strong>{{langmod.PGTITLE}}</strong></li>
+        </ol>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <br>
+        <div class="row">
+            <div class="col-lg-9">
+                <div>
+                    <div class="ibox">
+                        <div class="ibox-content">
+
+                            <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: 100%; height: auto;">
+                                <div class="table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+                                    <div class="pull-right" style="margin-bottom: 25px">
+                                        <button type="button" class="btn btn-success btn-xs mr5 mb10" id="modal-btn-onlypg" style="display: {{stb}}">{{langmod.PGBTNCREARDB}}</button>
+                                    </div>
+                                    <table class="table table-striped table-bordered table-hover dataTables-example" id="DataTables_Table_1">
+                                        <thead>
+                                            <tr>
+                                                <th width="20">#</th>
+                                                <th >{{langmod.PGTITLETABLEDB}}</th>
+                                                <th >{{langmod.PGTITLETABLEUSER}}</th>
+                                                <th >{{langmod.PGTITLETABLEACTION}}</th>
+                                            </tr>
+                                        </thead>
+                                            <tbody id="trtable">
+                                                {% set item1=1  %}
+                                                {% for dbuser in mod.databases %}
+                                                <tr id="{{dbuser.database}}">
+                                                    <td width="30">
+                                                        {{item1}}
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-md-3 text-left">
+                                                                {{dbuser.db}}
+                                                            </div>
+                                                            <div class="text-right" style="margin-right: 15px">
+                                                                <button type="button" class="btn btn-danger btn-xs mr5 mb10" onclick="return deletedatabasepg(0,'{{dbuser.db}}')"><i class="fa fa-times-circle-o"></i> {{langmod.PGBTNDELETE}}</button>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-md-11">
+                                                                {% if dbuser.user !='' %}
+                                                                    {% set userbd = dbuser.user|split(',')%}
+                                                                    {% set cont =0 %}
+
+                                                                    {% for usrdb in userbd %}
+                                                                        {% if usrdb !='' %}
+                                                                            <div class="row" style="margin-top: 5px">
+                                                                                <div class="col-lg-7">
+                                                                                    <div id="{{dbuser.database}}{{dbuser.user}}_name">{{usrdb}}</div>
+                                                                                </div>
+                                                                                <div  id="{{dbuser.database}}{{dbuser.user}}_button" class="text-right">
+                                                                                    <button type="button" class="btn btn-danger btn-xs mr5 mb10"  onclick="return deleteuserdbpg(0,'{{dbuser.db}}','{{usrdb}}')"><i class="fa fa-times-circle-o"></i> {{langmod.PGBTNDELETE}}</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    {% set cont=cont+1 %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    {% endif %}
+                                                    <td>
+                                                        <div class="col-md-2">
+                                                            <button type="button" class="btn btn-success btn-xs mr5 mb10" onclick="return newuserpg('{{dbuser.db}}')"> {{langmod.PGBTNADDUSER}}</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                {% set item1=item1+1  %}
+                                                {% endfor %}
+                                            </tbody>
+                                    </table>
+                                    <div class="col-md-2"></div>
+                                </div>
+                                <div class="slimScrollBar ui-draggable" style="background: rgb(243, 243, 243); height: 5px; position: absolute; bottom: 3px; opacity: 0.4; display: none; border-radius: 5px; z-index: 99; width: 742px; left: 0px;"></div>
+                                <div class="slimScrollRail" style="width: 100%; height: 5px; position: absolute; bottom: 3px; display: none; border-radius: 5px; background: rgb(51, 51, 51); opacity: 0.3; z-index: 90;"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="wrapper wrapper-content" style="margin-top: 35px">
+        {% include 'footer.html' %}
+    </div>
+</div>
+<style>
+    .dataTables_wrapper div.row{
+        width: 100%;
+    }
+</style>

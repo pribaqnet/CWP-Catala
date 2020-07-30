@@ -1,0 +1,195 @@
+<div class="row  border-bottom white-bg dashboard-header">
+    {% if mod.fsl == 1 %}
+    {% set stflalert ='block' %}
+    {% else %}
+    {% set stflalert ='none' %}
+    {% endif %}
+    <div class="row  alert alert-warning col-lg-12" style="margin-left: 5px; padding-right: 5px;display:{{stflalert}}" id="alertfl">
+        <strong>{{langene.GALARTFILEBLOCK}}</strong>
+    </div>
+    <div class="col-lg-10">
+        <h2>{{langmod.PDTITLE}} ({{users}})</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="?">Home</a></li>
+            <li class="breadcrumb-item active"><strong>{{langmod.PDTITLE}}</strong></li>
+        </ol>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <br>
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="ibox-title">
+                    <div id="divaddform" style="display: none; width: 90%; margin-left: 30px">
+                        <div class="panel panel-default" id="supr0">                     <!-- Start .panel -->
+                            <div class="panel-heading white-bg">
+                                <h4 class="panel-title">{{langmod.NEWDP}}</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="slimScrollDiv">
+                                    <div class="table-responsive">
+                                        <table  width="100%">
+                                            <tbody>
+                                            <tr>
+                                                <td><strong>{{langmod.DIRPD}}</strong></td>
+                                                <td class="center"><strong>{{langmod.USERDP}}</strong></td>
+                                                <td><strong>{{langmod.PASSDP}}</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="vertical-align: top">
+                                                    <table>
+                                                        <thead>
+                                                        <tr>
+                                                            <th>
+                                                                <div class="row" style="margin-left: 10px">
+                                                                    <div class="form-group">
+                                                                        <div class="col-lg-12">{{langmod.NAMEDIRDP}}: </div>
+                                                                        <div class="col-lg-12">
+                                                                            <input type="text" class="form-control col-lg-9" id="namedp">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>
+                                                                <div class="row" style="margin-left: 10px;margin-top: 25px">
+                                                                    <div class="radio-custom radio-inline"  style="margin-left: 10px">
+                                                                        <input type="radio" name="radio4" value="0" checked="checked" onclick="return changeradio(0)">
+                                                                        <label for="radio4">{{langmod.MANUALDP}}</label>
+                                                                    </div>
+                                                                    <div class="radio-custom radio-inline"  style="margin-left: 10px">
+                                                                        <input type="radio" name="radio4" value="1"  onclick="return changeradio(1)">
+                                                                        <label for="radio14">{{langmod.EXPLORET}}</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row" style="margin-top: 15px; margin-left: 10px" id="manual">
+                                                                    <div class="form-group">
+                                                                        <div class="col-lg-4">/home/{{users}}/</div>
+                                                                        <div class="col-lg-8">
+                                                                            <input type="text" class="form-control col-lg-11" id="path1">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row" style="margin-top: 15px; margin-left: 10px; display: none" id="exploret">
+                                                                    <div class="row" style="margin-top: 5px; margin-left: 3px" id="pathview">
+                                                                        /home/{{users}}/
+                                                                    </div>
+                                                                    <div class="row" style="margin-top: 5px; margin-left: 8px" id="divconte">
+                                                                        {% if mod.dirs|length > 0 %}
+                                                                            <table>
+                                                                            {% for var in mod.dirs %}
+                                                                                <tr>
+                                                                                    <td style="padding-left: 15px">
+                                                                                        <i class="fa fa-folder"></i>
+                                                                                        <a href="#" onclick="return searchdir('{{var.path}}/')">{{var.name}}</a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            {% endfor %}
+                                                                            </table>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                    </table>
+                                                </td>
+                                                <td style="vertical-align: top;padding-right: 5px">
+                                                    <div class="col-lg-6 text-center">
+                                                        <input class="form-control" type="text" id="useradd" style="margin-top: 15px">
+                                                        <input type="hidden" id="hiddenvalue" value="">
+                                                    </div>
+                                                </td>
+                                                <td  style="vertical-align: top;padding-right: 5px; padding-left: 5px;text-align: center">
+                                                    <div class="col-lg-6 text-center">
+                                                        <input class="form-control" type="password" id="pass1dp" style="margin-top: 15px"><br>
+                                                        <input class="form-control" type="password" id="pass2dp">
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <div class="col-lg-12 text-right" style="margin-top: 15px">
+                                            <button type="button" class="btn btn-success btn-xs mr5 mb10" id="btn-protege" onclick="return savedp()">{{langmod.PROT}}</button>
+                                            <button type="button" class="btn btn-default btn-xs mr5 mb10" id="btn-cancel" onclick="return cancel()">{{langmod.CANCE}}</button>
+                                        </div>
+                                    </div><div class="slimScrollBar ui-draggable" style="background: rgb(243, 243, 243); height: 5px; position: absolute; bottom: 3px; opacity: 0.4; display: none; border-radius: 5px; z-index: 99; width: 940px; left: 0px;"></div><div class="slimScrollRail" style="width: 100%; height: 5px; position: absolute; bottom: 3px; display: none; border-radius: 5px; background: rgb(51, 51, 51); opacity: 0.3; z-index: 90;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 text-right" id="divbtn-add">
+                        <button type="button" class="btn btn-success btn-xs mr5 mb10" onclick="return newdirprotec()">{{langmod.BTNADD}}</button>
+                    </div>
+                    {% if mod.dirprot|length > 0 %}
+                    <br>
+                    <div class="table-responsive col-lg-12" style="overflow: hidden; height: auto">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="per5">
+                                    #
+                                </th>
+                                <th>{{langmod.NAMEDP}}</th>
+                                <th>{{langmod.DIRECTOR}}</th>
+                                <th>{{langmod.USERDP}}</th>
+                                <th>{{langmod.ACCION}}</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tablebodydp">
+                            {% set array = 1 %}
+                            {% for var1 in mod.dirprot %}
+                            <tr>
+                                <td>
+                                    {{array}}
+                                </td>
+                                <td>{{var1.name}}</td>
+                                <td>{{var1.dir}} </td>
+                                <td>{{var1.user}}</td>
+                                <td align="center"><button type="button" class="btn btn-danger btn-xs mr5 mb10" onclick="return deletedp({{array-1}},'{{var1.user}}','{{var1.name}}',0)">{{langmod.DELETE}}</button></td>
+                            </tr>
+                            {% set array = array+1 %}
+                            {% endfor %}
+                            </tbody>
+                        </table><br><br>
+
+
+                    </div>
+                    {% else %}
+                    <br>
+                    <br>
+                    <div class="table-responsive" style="overflow: hidden; width: 90%; height: auto; margin-left: 30px">
+                        <div class="alert alert-warning fade in">
+                            <i class="glyphicon glyphicon-warning-sign alert-icon "></i>
+                            <strong>{{langmod.NOPROTECDIR}}</strong>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-3">
+                <div class="ibox ">
+                    <div class="ibox-content">
+                        <div class="jumbotron">
+                            <h1>{{langmod.PDTITLE1}}</h1>
+                            <p>{{langmod.DPDESCR1}}</p>
+                            <br>
+                            <p>{{langmod.DPDESCR2}}</p>
+                            <br>
+                            <p>{{langmod.DPDESCR3}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="wrapper wrapper-content" style="margin-top: 35px">
+        {% include 'footer.html' %}
+    </div>
+</div>

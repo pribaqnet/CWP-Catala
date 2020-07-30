@@ -1,0 +1,374 @@
+{% set app = mod.addons_mod %}
+{% if app == 'filemanager' %}{% set swlm = ' active' %}{% set diclm = 'in' %}{% else %}{% set swlm = '' %}{% set diclm = '' %}{% endif %}
+{% if app == 'wordpress' %}{% set swwp = ' active' %}{% set dicwp = 'in' %}{% else %}{% set swwp = '' %}{% set dicwp = '' %}{% endif %}
+{% if app == 'prestashop' %}{% set swps = ' active' %}{% set dicps = 'in' %}{% else %}{% set swps = '' %}{% set dicps = '' %}{% endif %}
+{% if app == 'joomla' %}{% set swjl = ' active' %}{% set dicjl = 'in' %}{% else %}{% set swjl = '' %}{% set dicjl = '' %}{% endif %}
+{% if app == 'drupal' %}{% set swdp = ' active' %}{% set dicdp = 'in' %}{% else %}{% set swdp = '' %}{% set dicdp = '' %}{% endif %}
+<style media="screen">
+  .script-container{
+    padding: 2rem 0px 0px;
+  }
+  .script-container-title{
+    display: flex;
+    justify-content: space-between;
+  }
+  #jl_form, #dp_form, #wp_form, #ps_form{
+    display:none;
+  }
+  .panel-body .form-group{
+    display: flex;
+    align-items: center;
+    padding: 1rem 0px;
+    margin-bottom:0px;
+  }
+  .panel-body .form-group:nth-child(odd){
+    background-color: #f5f5f5;
+  }
+  #conf_installation .modal-header{
+    padding:5px;
+  }
+  #conf_installation .modal-header h4{
+    margin:10px;
+    font-size:2rem;
+  }
+  #scrpt_install{
+    font-weight:bold;
+  }
+  .error-field{
+    color: #ff0000;
+    margin-top: 5px;
+    font-size: 12px;
+    display: block;
+    margin-bottom: -10px;
+  }
+  .conf-detail-title{
+    font-weight:bold;
+  }
+  #addons_tab_wrapper{
+
+  }
+  #installing_screen{
+    height: 500px;
+    display:none
+  }
+  .installing-loader{
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    height:100%;
+    flex-flow: column;
+  }
+  .installing-loader .fa-spin{
+    color: #1c84c6;
+    font-size: 10rem;
+  }
+  .installing-loader .icon-script{
+    position: absolute;
+    margin-top: 0.5rem;
+    font-size: 4rem;
+    color: #2f4050;
+  }
+  .installing-loader h1{
+    font-size: 4rem !important;
+  }
+  .installing-loader p{
+    font-size: 2.5rem;
+  }
+  #installing_screen:focus{
+    outline:none !important;
+  }
+  .database-info-td{
+    display:flex;
+    align-items: center;
+  }
+  .database-info-td .fa-stack{
+    font-size: 1.2rem;
+    color: #f8ac59;
+    margin-left:5px;
+  }
+  .addon-td-item{
+    line-height: 3.6rem;
+  }
+  #table_jl_container .table{
+    border-bottom: 1px solid #eee;
+    margin-bottom: 0px;
+  }
+  .pass_form_div{
+    display:flex;
+    flex-wrap:wrap;
+  }
+  .pass_container{
+    width: 65%;
+    margin-right: 5px;
+  }
+  .pwstrength_viewport_progress .progress{
+    margin-bottom: 0px;
+    margin-top: 5px;
+    border: 1px solid #e7eaec;
+  }
+  .pwstrength_viewport_progress .password-verdict{
+    color: #333333;
+  }
+  .copy-pass-btn{
+    position: absolute;
+    left: 57%;
+    top: 4px;
+    color: #999;
+  }
+  .copy-pass-btn:hover{
+    color:#676a6c;
+  }
+  .general-password-generator-options{
+    right:0px !important;
+  }
+  .rem-addons-options{
+    padding-left: 0px;
+    list-style: none;
+  }
+  .rem-addons-options .radio label{
+    font-size:1.4rem;
+  }
+  #desaddon ul{
+    font-size: 1.4rem;
+    list-style: circle;
+    padding-left: 2rem;
+  }
+  .deleting_tr{
+    background-color: #f5f5f566;
+    color: #e7eaec;
+  }
+  .deleting_tr a{
+    color:#1c84c669;
+  }
+  .dataTables_wrapper{
+    padding-bottom:0px;
+  }
+</style>
+{{app}}
+<div class="modal" id="conf_installation" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" style="width:500px;">
+    <div class="modal-content animated fadeIn">
+      <div class="modal-header">
+        <h4 class="text-center">{{langmod.ADDCONF}}</h4>
+      </div>
+      <div class="modal-body" style="padding:15px">
+
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="deleteaddons" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header" style="padding: 10px;">
+              <button type="button" class="close" data-dismiss="modal">
+                <span aria-hidden="true">×</span>
+                <span class="sr-only">{{langene.MDCLOSE}}</span>
+              </button>
+              <h4 class="modal-title" style="font-size:2rem">{{langmod.ADDATENTION}}</h4>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+              <p style="font-weight:600;font-size:1.6rem">{{langmod.ADDDELLAB1}}</p>
+              <div id="desaddon"></div>
+              <ul class="rem-addons-options">
+                <li>
+                  <div class="radio">
+                      <input type="radio" id="rem_jfiles" class="rem-option" value="1" name="rem_option" checked>
+                      <label for="rem_jfiles">{{langmod.ADDDELLAB2}}</label>
+                  </div>
+                </li>
+                <li>
+                  <div class="radio">
+                      <input type="radio" id="rem_whole" class="rem-option" value="2" name="rem_option">
+                      <label for="rem_whole">{{langmod.ADDDELLAB3}}</label>
+                  </div>
+                </li>
+              </ul>
+              <p style="font-weight:600;font-size:1.6rem">{{langmod.ADDDELLAB4}}</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-white" data-dismiss="modal">{{langmod.TNOT}}</button>
+              <button type="button" class="btn btn-primary" id="conf_del_btn" onclick="deleteAddon(this, 1)">{{langmod.TYES}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row  border-bottom white-bg dashboard-header"  id="upheader">
+    {% if mod.fsl == 1 %}
+        {% set stflalert ='block' %}
+    {% else %}
+        {% set stflalert ='none' %}
+    {% endif %}
+    <div class="row  alert alert-warning col-lg-12" style="margin-left: 5px; padding-right: 5px;display:{{stflalert}}" id="alertfl">
+        <strong>{{langene.GALARTFILEBLOCK}}</strong>
+    </div>
+    <div class="col-lg-12">
+        <h2>{{langmod.ADDDTLASW}} ({{users}})</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="?">Home</a></li>
+            <li class="breadcrumb-item active"><strong>{{langmod.ADDDTLASW}}</strong></li>
+            <li class="breadcrumb-item active"><strong>{{mod.addons_mod}}</strong></li>
+
+        </ol>
+    </div>
+</div>
+<div class="row" style="margin-top:2rem;">
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-content" id="addons_tab_wrapper">
+                        <div class="tabs-container">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="{{swwp}}"><a data-toggle="tab" href="#tab_swwp"><i class="fa fa-wordpress"></i> {{langmod.ADDTLMENU3}}</a></li>
+                                <li class="{{swps}}"><a data-toggle="tab" href="#tab_swps"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {{langmod.ADDTLMENU4}}</a></li>
+                                <li class="{{swjl}}"><a data-toggle="tab" href="#tab_swjl"><i class="fa fa-joomla"></i> {{langmod.ADDTLMENU5}}</a></li>
+                                <li class="{{swdp}}"><a data-toggle="tab" href="#tab_swdp"><i class="fa fa-drupal"></i> {{langmod.ADDTLMENU6}}</a></li>
+                                <!-- <li class="{{swlm}}"><a data-toggle="tab" href="#tab_swlm"><i class="fa fa-laptop"></i> {{langmod.ADDTLMENU2}}</a></li> -->
+                            </ul>
+                            <div class="tab-content">
+                                {% include 'mod_addons_wp.html' %}
+                                {% include 'mod_addons_ps.html' %}
+                                {% include 'mod_addons_jl.html' %}
+                                {% include 'mod_addons_dp.html' %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content" id="installing_screen" tabindex="1">
+                      <div class="installing-loader" id="installing_loader">
+                        <h1>{{langmod.ADDINSTALLING}} <span id="installing_title_script"></span></h1>
+                        <span class="icon-script"><i class="fa fa-joomla" id="icon_installing"></i></span>
+                        <span><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                        <p>{{langmod.ADDPLWAIT}}</p>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-lg-4">
+                <div class="ibox-content">
+                    {% if mod.addons_mod == 'wordpress' %}{% set swtabwp = 'block' %}{% else %}{% set swtabwp = 'none' %}{% endif %}
+                    {% if mod.addons_mod == 'prestashop' %}{% set swtabps = 'block' %}{% else %}{% set swtabps = 'none' %}{% endif %}
+                    {% if mod.addons_mod == 'joomla' %}{% set swtabjl = 'block' %}{% else %}{% set swtabjl = 'none' %}{% endif %}
+                    {% if mod.addons_mod == 'drupal' %}{% set swtabdp = 'block' %}{% else %}{% set swtabdp = 'none' %}{% endif %}
+                    {% if mod.addons_mod == 'filemanager' %}{% set swtabfl = 'block' %}{% else %}{% set swtabfl = 'none' %}{% endif %}
+                    <div style="display: {{swtabwp}}" class="tabder" id="swtabwp">
+                        <input type="hidden" id="valuedelete" value="">
+                        <input type="hidden" id="line" value=""><br>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="padding-left: 15px"><h3>{{langmod.ADDDTLTAB1}}</h3></div>
+                            <div class="panel-body" id="panelwp">
+                                <div class="table-responsive" style="overflow: hidden; width: 95%; height: auto;">
+                                    <table class="table table-striped" style="width: 95%;">
+                                        <thead>
+                                        <tr>
+                                            <th class="per2">{{langmod.ADDDWP3}}</th>
+                                            <th>{{langmod.ADDDWP2}}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="trpanelwp">
+                                        {% set line =1 %}
+                                        {% for wp in mod.wp %}
+                                        <tr id="tdwp{{line}}">
+                                            <td>
+                                                <a href="#"  title="" class="tipB" data-original-title="Data Base: {{wp.dbwp}}  UserDate Base: {{wp.userbdwp}}"><i class="fa fa-database"></i></a>
+                                                <a href="#" onclick="return deletwp('{{wp.domain}}@{{wp.path}}@{{wp.dbwp}}@{{wp.userbdwp}}',{{line}},'wp')"><i class="fa fa-trash"></i></a>
+                                            </td>
+                                            <td><a href="http://{{wp.domain}}/{{wp.sub}}" target="_blank">{{wp.domain}}/{{wp.sub}}</a><p>({{wp.path}})</p></td>
+                                        </tr>
+                                        {% set line =line+1 %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: {{swtabps}}" class="tabder" id="swtabps">
+                        <input type="hidden" id="valuedelete" value="">
+                        <input type="hidden" id="line" value=""><br>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="padding-left: 15px"><h3>{{langmod.ADDDTLTAB2}}</h3></div>
+                            <div class="panel-body" id="panelps">
+                                <div class="table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th class="per2">{{langmod.ADDDWP3}}</th>
+                                            <th>{{langmod.ADDDWP2}}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="trpanelps">
+                                        {% set line =1 %}
+                                        {% for ps in mod.ps %}
+                                        <tr id="tdps{{line}}">
+                                            <td>
+                                                <a href="#"  title="" class="tipB" data-original-title="Data Base: {{ps.dbwp}}  UserDate Base: {{ps.userbdwp}}"><i class="fa fa-database"></i></i></a>
+                                                <a href="#" onclick="return deletwp('{{ps.domain}}@{{ps.path}}@{{ps.dbwp}}@{{ps.userbdwp}}',{{line}},'ps')"><i class="fa fa-trash"></i></a>
+                                            </td>
+                                            <td><a href="http://{{ps.domain}}/{{ps.sub}}" target="_blank">{{ps.domain}}/{{ps.sub}}</a><p>({{ps.path}})</p></td>
+
+                                        </tr>
+                                        {% set line =line+1 %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: {{swtabjl}}" class="tabder" id="swtabjl">
+
+                    </div>
+
+                    <div style="display: {{swtabdp}}" class="tabder" id="swtabdp">
+                        <input type="hidden" id="valuedelete" value=""><input type="hidden" id="line" value=""><br>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="padding-left: 15px"><h3>{{langmod.ADDDTLTAB4}}</h3></div>
+                            <div class="panel-body" id="paneldp">
+                                <div class="table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th class="per2">{{langmod.ADDDDP3}}</th>
+                                            <th>{{langmod.ADDDWP2}}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="trpaneldp">
+                                        {% set line =1 %}
+                                        {% for dp in mod.dp %}
+                                        <tr id="tddp{{line}}">
+                                            <td>
+                                                <a href="#"  title="" class="tipB" data-original-title="Data Base: {{dp.dbwp}}  UserDate Base: {{dp.userbdwp}}"><i class="fa fa-database"></i></a>
+                                                <a href="#" onclick="return deletwp('{{dp.domain}}@{{dp.path}}@{{dp.dbwp}}@{{dp.userbdwp}}',{{line}},'dp')"><i class="fa fa-trash"></i></i></a>
+                                            </td>
+                                            <td><a href="{{dp.domain}}" target="_blank">{{dp.domain}}</a> <p> ({{dp.path}})</p></td>
+                                        </tr>
+                                        {% set line =line+1 %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: {{swtabfl}}" class="tabder" id="swtabfl">
+                        <h4>{{langmod.ADDDDP32}} </h4>
+                        <small>{{langmod.ADDDDP33}}</small>
+
+                        <h4 style="margin-top: 25px">{{langmod.ADDDDP34}} </h4>
+                        <small>{{langmod.ADDDDP35}}</small>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <div class="wrapper wrapper-content" style="margin-top: 35px">
+        {% include 'footer.html' %}
+    </div>
+</div>
